@@ -508,6 +508,13 @@ namespace Menu {
 				"\"/uptime\" in the formatting.",
 				"",
 				"True or False."},
+			{"show_cpu_watts",
+				"Shows the CPU power consumption in watts.",
+				"",
+				"Note: Root permissions are required",
+				"Supports only Intel x86 CPUs on Linux",
+				"",
+				"True or False."},
 		},
 	#ifdef GPU_SUPPORT
 		{
