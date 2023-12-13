@@ -664,6 +664,7 @@ namespace Cpu {
 		fs::path base_dir, energy_now, energy_full, power_now, current_now, voltage_now, status, online;
 		string device_type;
 		bool use_energy = true;
+		bool use_power = true;
 	};
 
 	auto get_battery() -> tuple<int, long, string> {
@@ -714,7 +715,8 @@ namespace Cpu {
 						else if (fs::exists(bat_dir / "current_now")) {
 							new_bat.current_now = bat_dir / "current_now";
 							new_bat.voltage_now = bat_dir / "voltage_now";
-						} 
+						}
+						else new_bat.use_power = false;
 
 						if (fs::exists(bat_dir / "AC0/online")) new_bat.online = bat_dir / "AC0/online";
 						else if (fs::exists(bat_dir / "AC/online")) new_bat.online = bat_dir / "AC/online";
@@ -799,12 +801,15 @@ namespace Cpu {
 
 		//? Get battery drain in watts
 		double watts = -1;
-		if (b.power_now or (b.current_now and b.voltage_now)) {
+		if (b.use_power && !is_in(status, "charging", "full")) {
 			try {
-				if (b.power_now) watts = stoll(readfile(b.power_now, "0")) / 1000000.0;
-				else watts = stoll(readfile(b.current_now, "0")) / 1000000.0 * stoll(readfile(b.voltage_now, "0")) / 1000000.0;
+				if (!b.power_now.empty()) {
+					watts = stoll(readfile(b.power_now, "0")) / 1000000.0;
+				} else {
+					watts = stoll(readfile(b.current_now, "0")) / 1000000.0 * stoll(readfile(b.voltage_now, "0")) / 1000000.0;
+				}
 			}
-			catch (const std::invalid_argument&) { }
+			catch (const std::invalid_argument&) {} 
 			catch (const std::out_of_range&) { }
 		}
 
