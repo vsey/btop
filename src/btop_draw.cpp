@@ -705,6 +705,7 @@ namespace Cpu {
 		if (Config::getB("show_battery") and has_battery) {
 			static int old_percent{};   // defaults to = 0
 			static long old_seconds{};  // defaults to = 0
+			static double old_watt{};   // defaults to = 0
 			static string old_status;
 			static Draw::Meter bat_meter {10, "cpu", true};
 			static const unordered_flat_map<string, string> bat_symbols = {
@@ -716,12 +717,14 @@ namespace Cpu {
 
 			const auto& [percent, watt, seconds, status] = current_bat;
 
-			if (redraw or percent != old_percent or seconds != old_seconds or status != old_status) {
+			if (redraw or percent != old_percent or seconds != old_seconds or status != old_status or old_watt != watt) {
 				old_percent = percent;
 				old_seconds = seconds;
+				old_watt = watt;
 				old_status = status;
 				const string str_time = (seconds > 0 ? sec_to_dhms(seconds, true, true) : "");
 				const string str_percent = to_string(percent) + '%';
+				const string str_watt = floating_humanizer(watt, true);
 				const auto& bat_symbol = bat_symbols.at((bat_symbols.contains(status) ? status : "unknown"));
 				const int current_len = (Term::width >= 100 ? 11 : 0) + str_time.size() + str_percent.size() + to_string(Config::getI("update_ms")).size();
 				const int current_pos = Term::width - current_len - 17;
@@ -733,7 +736,7 @@ namespace Cpu {
 
 				out += Mv::to(y, bat_pos) + title_left + Theme::c("title") + Fx::b + "BAT" + bat_symbol + ' ' + str_percent
 					+ (Term::width >= 100 ? Fx::ub + ' ' + bat_meter(percent) + Fx::b : "")
-					+ (not str_time.empty() ? ' ' + Theme::c("title") + str_time : " ") + Fx::ub + title_right + watt
+					+ (not str_time.empty() ? ' ' + Theme::c("title") + str_time : " ") + Fx::ub + title_right + str_watt;
 			}
 		}
 		else if (bat_pos > 0) {
