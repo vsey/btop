@@ -714,7 +714,7 @@ namespace Cpu {
 				{"unknown", "○"}
 			};
 
-			const auto& [percent, seconds, status] = current_bat;
+			const auto& [percent, watt, seconds, status] = current_bat;
 
 			if (redraw or percent != old_percent or seconds != old_seconds or status != old_status) {
 				old_percent = percent;
@@ -733,7 +733,7 @@ namespace Cpu {
 
 				out += Mv::to(y, bat_pos) + title_left + Theme::c("title") + Fx::b + "BAT" + bat_symbol + ' ' + str_percent
 					+ (Term::width >= 100 ? Fx::ub + ' ' + bat_meter(percent) + Fx::b : "")
-					+ (not str_time.empty() ? ' ' + Theme::c("title") + str_time : " ") + Fx::ub + title_right;
+					+ (not str_time.empty() ? ' ' + Theme::c("title") + str_time : " ") + Fx::ub + title_right + watt
 			}
 		}
 		else if (bat_pos > 0) {
