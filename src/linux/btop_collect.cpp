@@ -661,7 +661,7 @@ namespace Cpu {
 	}
 
 	struct battery {
-		fs::path base_dir, energy_now, energy_full, power_now, status, online;
+		fs::path base_dir, energy_now, energy_full, power_now, current_now, voltage_now, status, online;
 		string device_type;
 		bool use_energy = true;
 	};
@@ -705,6 +705,9 @@ namespace Cpu {
 						if (fs::exists(bat_dir / "energy_full")) new_bat.energy_full = bat_dir / "energy_full";
 						else if (fs::exists(bat_dir / "charge_full")) new_bat.energy_full = bat_dir / "charge_full";
 						else new_bat.use_energy = false;
+
+						if (fs::exists(bat_dir / "current_now")) new_bat.energy_full = bat_dir / "current_now";
+						if (fs::exists(bat_dir / "voltage_now")) new_bat.energy_full = bat_dir / "voltage_now";
 
 						if (not new_bat.use_energy and not fs::exists(bat_dir / "capacity")) {
 							continue;
