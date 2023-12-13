@@ -706,15 +706,15 @@ namespace Cpu {
 						else if (fs::exists(bat_dir / "charge_full")) new_bat.energy_full = bat_dir / "charge_full";
 						else new_bat.use_energy = false;
 
-						if (fs::exists(bat_dir / "current_now")) new_bat.energy_full = bat_dir / "current_now";
-						if (fs::exists(bat_dir / "voltage_now")) new_bat.energy_full = bat_dir / "voltage_now";
-
 						if (not new_bat.use_energy and not fs::exists(bat_dir / "capacity")) {
 							continue;
 						}
 
 						if (fs::exists(bat_dir / "power_now")) new_bat.power_now = bat_dir / "power_now";
-						else if (fs::exists(bat_dir / "current_now")) new_bat.power_now = bat_dir / "current_now";
+						else if (fs::exists(bat_dir / "current_now")) {
+							new_bat.current_now = bat_dir / "current_now";
+							new_bat.voltage_now = bat_dir / "voltage_now";
+						} 
 
 						if (fs::exists(bat_dir / "AC0/online")) new_bat.online = bat_dir / "AC0/online";
 						else if (fs::exists(bat_dir / "AC/online")) new_bat.online = bat_dir / "AC/online";
