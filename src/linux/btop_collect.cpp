@@ -797,6 +797,17 @@ namespace Cpu {
 			}
 		}
 
+		//? Get battery drain in watts
+		double watts = -1;
+		if (b.power_now or (b.current_now and b.voltage_now)) {
+			try {
+				if (b.power_now) watts = stoll(readfile(b.power_now, "0")) / 1000000.0;
+				else watts = stoll(readfile(b.current_now, "0")) / 1000000.0 * stoll(readfile(b.voltage_now, "0")) / 1000000.0;
+			}
+			catch (const std::invalid_argument&) { }
+			catch (const std::out_of_range&) { }
+		}
+
 		return {percent, seconds, status};
 	}
 
