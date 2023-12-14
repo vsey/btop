@@ -367,7 +367,7 @@ namespace Cpu {
 	}
 
 	auto get_battery() -> tuple<int, float, long, string> {
-		if (not has_battery) return {0, 0, ""};
+		if (not has_battery) return {0, 0, 0, ""};
 
 		long seconds = -1;
 		float watts = -1;
